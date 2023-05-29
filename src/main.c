@@ -6,8 +6,14 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 14:57:28 by paugonca          #+#    #+#             */
-/*   Updated: 2023/05/29 14:57:41 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/05/29 15:11:54 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+int	main(void)
+{
+	ft_putstr_fd("Hello world!\n", 1);
+	return (EXIT_SUCCESS);
+}

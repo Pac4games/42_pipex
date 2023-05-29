@@ -6,7 +6,7 @@
 #    By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/29 14:41:29 by paugonca          #+#    #+#              #
-#    Updated: 2023/05/29 15:02:26 by paugonca         ###   ########.fr        #
+#    Updated: 2023/05/29 15:15:28 by paugonca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,8 +24,10 @@ SRC			= $(addprefix $(SRC_PATH)/, $(SRC_NAME))
 OBJ			= $(patsubst $(SRC_PATH)/%.c, $(OBJ_PATH)/%.o, $(SRC))
 DEPS		= ./libft/libft.a
 
-SRC_PATH	= src/
-OBJ_PATH	= obj/
+SRC_PATH	= ./src
+OBJ_PATH	= ./obj
+
+all: $(NAME)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -49,4 +51,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all re clean fclean
+.PHONY: all clean fclean re
