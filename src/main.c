@@ -6,32 +6,26 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 14:57:28 by paugonca          #+#    #+#             */
-/*   Updated: 2023/05/31 17:49:10 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/01 17:09:41 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <stdlib.h>
 
 int	main(void)
 {
-	int id = fork();
-	int	n;
-	int	p;
+	int	id;
+	int	res;
 
+	id = fork();
 	if (id == 0)
-		n = 1;
+		sleep(1);
+	printf("Current ID: %d, Parent ID: %d\n", getpid(), getppid());
+	res = wait(NULL);
+	if (res == -1)
+		printf("No children to wait for.\n");
 	else
-	{
-		n = 6;
-		wait(0);
-	}
-	p = n;
-	while (p < n + 5)
-	{
-		printf("%d ", p++);
-		fflush(stdout);
-	}
-	if (id != 0)
-		printf("\n");
+		printf("%d finished execution.\n", res);
 	return (EXIT_SUCCESS);
 }
