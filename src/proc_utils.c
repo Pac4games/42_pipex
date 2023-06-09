@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 14:12:49 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/09 15:04:30 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/09 17:14:54 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,7 @@ static char	*get_path(char *cmd, char **env)
 		free(res);
 		p++;
 	}
-	p = 0;
-	while (paths[p])
-		free(paths[p++]);
-	free(paths);
+	free_matrix(paths);
 	return (NULL);
 }
 
@@ -52,9 +49,7 @@ static void	proc_exec(char *arg, char **env)
 	path = get_path(cmd[0], env);
 	if (!path)
 	{
-		while (cmd[p])
-			free(cmd[p++]);
-		free(cmd);
+		free_matrix(cmd);
 		print_error("path not found.");
 	}
 	if (execve(path, cmd, env) == -1)
@@ -72,4 +67,17 @@ void	proc_child(char **av, char **env, int *fd)
 	dup2(inp, STDIN_FILENO);
 	close(fd[0]);
 	proc_exec(av[2], env);
+}
+
+void	proc_parent(char **av, char **env, int *fd)
+{
+	int	out;
+
+	out = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (out == -1)
+		print_error("failed to create output file descriptor.");
+	dup2(fd[0], STDIN_FILENO);
+	dup2(out, STDOUT_FILENO);
+	close(fd[1]);
+	proc_exec(av[3], env);
 }
