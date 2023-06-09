@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   extra_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 14:57:52 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/09 14:17:23 by paugonca         ###   ########.fr       */
+/*   Created: 2023/06/09 14:01:18 by paugonca          #+#    #+#             */
+/*   Updated: 2023/06/09 14:23:21 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "pipex.h"
+#include <unistd.h>
 
-# include "../libft/libft.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <limits.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-
-# define TRUE 1
-# define FALSE 0
-
-//extra_utils.c
-void	print_error(char *msg);
-//proc_utils.c
-void	proc_child(char **av, char **env, int *fd);
-
-#endif
+void	print_error(char *msg)
+{
+	ft_putstr_fd("Error: ", STDERR_FILENO);
+	ft_putstr_fd(msg, STDERR_FILENO);
+	ft_putchar_fd('\n', STDERR_FILENO);
+	exit(EXIT_FAILURE);
+}

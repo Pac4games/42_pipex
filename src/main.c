@@ -6,44 +6,26 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 14:57:28 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/07 11:34:40 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/09 14:16:25 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main(void)
+int	main(int ac, char **av, char **env)
 {
-	int	pid;
-	int	file;
-	int	wstatus;
-	int	statusCode;
-	
-	pid = fork();
-	file = open("pingResults.txt", O_WRONLY | O_CREAT, 0777);
-	wstatus = 0;
-	statusCode = 0;
-	if (pid == -1 || file == -1)
-		return (EXIT_FAILURE);
-	else if (pid == 0)
+	int		fd[2];
+	pid_t	pid1;
+
+	if (ac == 5)
 	{
-		if (execlp("ping", "ping", "-c", "1", "google.com", NULL) == -1)
-		{
-			printf("Program not found!\n");
-			return (EXIT_FAILURE);
-		}
+		if (pipe(fd) == -1)
+			print_error("couldn't create pipe.");
+		pid1 = fork();
+		if (pid1 == -1)
+			print_error("failed to fork process.");
+		if (pid1 == 0)
+			
 	}
-	else
-	{
-		wait(&wstatus);
-		if (WIFEXITED(wstatus))
-		{
-			statusCode = WEXITSTATUS(wstatus);
-			if (statusCode == EXIT_SUCCESS)
-				printf("Success!\n");
-			else
-				printf("Failure\n");
-		}
-	}
-	return (statusCode);
+	return (EXIT_SUCCESS);
 }
