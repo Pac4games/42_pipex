@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 14:12:49 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/09 17:14:54 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/12 16:07:16 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,28 +56,19 @@ static void	proc_exec(char *arg, char **env)
 		print_error("execution failed.");
 }	
 
-void	proc_child(char **av, char **env, int *fd)
+void	proc_sort(char *limiter, int ac)
 {
-	int	inp;
+	pid_t	buf;
+	int		fd[2];
+	char	*line;
 
-	inp = open(av[1], O_RDONLY, 0777);
-	if (inp == -1)
-		print_error("failed to create input file descriptor.");
-	dup2(fd[1], STDOUT_FILENO);
-	dup2(inp, STDIN_FILENO);
-	close(fd[0]);
-	proc_exec(av[2], env);
-}
-
-void	proc_parent(char **av, char **env, int *fd)
-{
-	int	out;
-
-	out = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (out == -1)
-		print_error("failed to create output file descriptor.");
-	dup2(fd[0], STDIN_FILENO);
-	dup2(out, STDOUT_FILENO);
-	close(fd[1]);
-	proc_exec(av[3], env);
-}
+	if (ac < 6)
+		print_error("invalid syntax.");
+	if (pipe(fd) == -1)
+		print_error("failed to create pipe.");
+	buf = fork();
+	if (buf == 0)
+	{
+		close(fd[0]);
+	}
+}	

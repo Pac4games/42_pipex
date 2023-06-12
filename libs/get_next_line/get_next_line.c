@@ -1,33 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 14:57:52 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/12 15:55:51 by paugonca         ###   ########.fr       */
+/*   Created: 2022/11/16 16:40:26 by paugonca          #+#    #+#             */
+/*   Updated: 2022/11/16 16:48:15 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "get_next_line.h"
 
-# include "../libft/libft.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <limits.h>
-# include <fcntl.h>
-# include <sys/wait.h>
+char	*get_next_line(int fd)
+{
+	static char	buf[BUFFER_SIZE + 1];
+	char		*res;
+	int			p;
 
-# define TRUE 1
-# define FALSE 0
-
-//extra_utils.c
-void	print_error(char *msg);
-void	free_matrix(char **matrix);
-//proc_utils.c
-void	proc_child(char *av, char **env);
-void	proc_sort(char *limiter, int ac);
-
-#endif
+	p = 0;
+	if (BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
+	{
+		while (buf[p])
+			buf[p++] = 0;
+		return (NULL);
+	}
+	res = NULL;
+	while (buf[0] || read(fd, buf, BUFFER_SIZE) > 0)
+	{
+		res = ft_strjoin(res, buf);
+		if (clean_buf(buf))
+			break ;
+	}
+	return (res);
+}
