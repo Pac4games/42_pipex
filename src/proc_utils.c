@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 14:12:49 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/12 16:07:16 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/12 16:57:01 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,11 @@ void	proc_sort(char *limiter, int ac)
 	if (buf == 0)
 	{
 		close(fd[0]);
+		while (get_next_line(&line))
+		{
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+				exit(EXIT_SUCCESS);
+			write(fd[1], line, ft_strlen(line));
+		}
 	}
 }	
