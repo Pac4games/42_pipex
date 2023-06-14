@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 14:57:52 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/12 17:02:22 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/14 12:14:31 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@
 void	print_error(char *msg);
 void	free_matrix(char **matrix);
 int		get_next_line(char **line);
+int		open_file(char *av, int p);
 //proc_utils.c
 void	proc_child(char *av, char **env);
+void	proc_exec(char *arg, char **env);
 void	proc_sort(char *limiter, int ac);
 
 #endif

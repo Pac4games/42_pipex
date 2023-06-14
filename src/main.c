@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 14:57:28 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/09 17:23:42 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/14 12:22:07 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,29 @@
 
 int	main(int ac, char **av, char **env)
 {
-	int		fd[2];
-	pid_t	pid1;
+	int	p;
+	int	in;
+	int	out;
 
-	if (ac == 5)
+	if (ac >= 5)
 	{
-		if (pipe(fd) == -1)
-			print_error("couldn't create pipe.");
-		pid1 = fork();
-		if (pid1 == -1)
-			print_error("failed to fork process.");
-		if (pid1 == 0)
-			proc_child(av, env, fd);
-		waitpid(pid1, NULL, 0);
-		proc_parent(av, env, fd);
+		if (!ft_strncmp(av[1], "proc_sort", 0))
+		{
+			p = 3;
+			out = open_file(av[ac - 1], 0);
+			proc_sort(av[2], ac);
+		}
+		else
+		{
+			p = 2;
+			out = open_file(av[ac - 1], 1);
+			in = open_file(av[1], 2);
+			dup2(in, STDIN_FILENO);
+		}
+		while (p < ac - 2)
+			proc_child(av[p++], env);
+		dup2(out, STDOUT_FILENO);
+		proc_exec(av[ac - 2], env);
 	}
-	else
-		print_error("invalid arguments.");
-	return (EXIT_SUCCESS);
+	print_error("invalid arguments.");
 }

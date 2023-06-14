@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 14:12:49 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/12 16:57:01 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/14 12:38:18 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,23 +38,43 @@ static char	*get_path(char *cmd, char **env)
 	return (NULL);
 }
 
-static void	proc_exec(char *arg, char **env)
+void	proc_exec(char *arg, char **env)
 {
 	char	**cmd;
-	int		p;
 	char	*path;
 
-	p = 0;
 	cmd = ft_split(arg, ' ');
 	path = get_path(cmd[0], env);
 	if (!path)
 	{
 		free_matrix(cmd);
-		print_error("path not found.");
+		print_error("valid path not found.");
 	}
 	if (execve(path, cmd, env) == -1)
-		print_error("execution failed.");
-}	
+		print_error("invalid command.");
+}
+
+void	proc_child(char *av, char **env)
+{
+	pid_t	pid;
+	int		fd[2];
+
+	if (pipe(fd) == -1)
+		print_error("failed to open pipe.");
+	pid = fork();
+	if (pid == 0)
+	{
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		proc_exec(av, env);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		waitpid(pid, NULL, 0);
+	}
+}
 
 void	proc_sort(char *limiter, int ac)
 {
@@ -77,4 +97,10 @@ void	proc_sort(char *limiter, int ac)
 			write(fd[1], line, ft_strlen(line));
 		}
 	}
-}	
+	else
+	{
+		close(fd[0]);
+		dup2(fd[0], STDIN_FILENO);
+		wait(NULL);
+	}
+}
