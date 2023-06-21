@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:53:13 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/21 12:50:33 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/21 13:03:07 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,34 @@ static void	proc_cmd(t_cmd *cmd, char **env, int plug, int p)
 	}
 }
 
+static int	proc_wait(t_cmd *cmd1, t_cmd *cmd2)
+{
+	int	res;
+	int	end_pid;
+	int	status;
+
+	res = 0;
+	end_pid = 1;
+	while (end_pid > 0)
+	{
+		end_pid = wait(&status);
+		if (end_pid == cmd1->pid)
+			close(cmd1->fd[1]);
+		else
+			close(cmd2->fd[0]);
+		if (end_pid == cmd2->pid)
+		{
+			if (WIFEXITED(status))
+				res = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				res = WTERMSIG(status);
+			else
+				res = 1;
+		}
+	}
+	return (res);
+}
+
 void	proc_init(char **av, t_cmd *cmd1, t_cmd *cmd2)
 {
 	cmd1->fd[0] = open(av[1], O_RDONLY);
@@ -57,10 +85,12 @@ void	proc_init(char **av, t_cmd *cmd1, t_cmd *cmd2)
 		print_error("failed to parse second command.");
 }
 
-void	proc_exec(t_cmd *cmd1, t_cmd *cmd2, char **env)
+int	proc_exec(t_cmd *cmd1, t_cmd *cmd2, char **env)
 {
+	int	res;
 	int	stat;
 
+	res = 0;
 	stat = fork();
 	if (stat == -1)
 		print_error("failed to fork process.");
@@ -69,5 +99,6 @@ void	proc_exec(t_cmd *cmd1, t_cmd *cmd2, char **env)
 		proc_create(cmd1, cmd2);
 		proc_cmd(cmd1, env, cmd2->fd[0], 0);
 		proc_cmd(cmd2, env, cmd1->fd[1], 1);
+		res = proc_wait(cmd1, cmd2);
 	}
 }
