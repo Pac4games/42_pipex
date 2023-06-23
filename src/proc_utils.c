@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:53:13 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/21 14:03:10 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/23 12:07:59 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ static void	proc_cmd(t_cmd *cmd, char **env, int plug, int p)
 		cmd->path = get_path(cmd->args[0], env);
 		if (!cmd->path)
 			print_error("failed to get PATH.");
+		close(cmd->fd[0]);
+		close(cmd->fd[1]);
 		execve(cmd->path, cmd->args, env);
 		free(cmd->path);
 		exit(42);
@@ -88,25 +90,13 @@ void	proc_init(char **av, t_cmd *cmd1, t_cmd *cmd2)
 int	proc_exec(t_cmd *cmd1, t_cmd *cmd2, char **env)
 {
 	int	res;
-	int	stat;
 
 	res = 0;
-	stat = fork();
-	if (stat == -1)
-		print_error("failed to fork process.");
-	else if (stat == 0)
-	{
-		proc_create(cmd1, cmd2);
-		proc_cmd(cmd1, env, cmd2->fd[0], 0);
-		proc_cmd(cmd2, env, cmd1->fd[1], 1);
-		res = proc_wait(cmd1, cmd2);
-		close(cmd1->fd[0]);
-		close(cmd1->fd[1]);
-		exit(res);
-	}
-	waitpid(res, &stat, 0);
-	res = 1;
-	if (WIFEXITED(stat))
-		res = WEXITSTATUS(stat);
+	proc_create(cmd1, cmd2);
+	proc_cmd(cmd1, env, cmd2->fd[0], 0);
+	proc_cmd(cmd2, env, cmd1->fd[1], 1);
+	close(cmd1->fd[0]);
+	close(cmd1->fd[1]);
+	res = proc_wait(cmd1, cmd2);
 	return (res);
 }

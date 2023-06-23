@@ -6,7 +6,7 @@
 /*   By: paugonca <paugonca@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:46:47 by paugonca          #+#    #+#             */
-/*   Updated: 2023/06/21 12:44:56 by paugonca         ###   ########.fr       */
+/*   Updated: 2023/06/23 12:07:21 by paugonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_matrix(char **mtx)
 
 	p = 0;
 	while (mtx[p])
-		free(mtx[p]);
+		free(mtx[p++]);
 	free(mtx);
 }
 
